@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block title%} Show Tasks {% endblock %}
+{% block content %}
+
+<div style="display: flex;">
+  <div class="col-sm-3">
+    <div class="bg-light" style="padding-bottom: 10px;">
+      <div style="text-align: center; padding-top: 10px;">
+        <span><p class="text-danger"><b>Alarming News</b></p></span>
+      </div>
+      {% for note in data %}
+      {% if note.category == 2 %}
+      <div class="card mb-3" style="max-width: 18rem; margin: 6px;">
+        <div class="card-header bg-transparent text-dark">
+          <span><b>{{ note.taskTitle }}</b></span>
+        </div>
+        <div class="card-body text-success">
+          <h6 class="card-title text-dark">{{ note.pub_date }}</h6>
+          <p class="card-text text-dark">{{ note.taskDescription }}</p>
+        </div>
+      </div>
+      {% endif %}  
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-sm-6 d-flex justify-content-center"">
+    <div>
+      {% for task in data %}
+      <div class="card mb-3" style="max-width: 36rem;">
+        <div class="card-header bg-transparen" style="display: flex; justify-content: space-between;">
+          <div>
+            <span class="text-dark">{{ task.taskTitle }}</span>
+            <a href="{% url 'edit-tasks' id=task.id %}"><i class='fas fa-edit' style='font-size:18px'></i></a>
+          </div>
+          <div>
+            <button type="button" disabled class="rounded btn btn-outline-primary btn-sm">Rating 
+              <span class="border border-success rounded-circle text-success badge badge-secondary">{{ task.rating }}</span>
+            </button>
+            <span class="text-primary" style="margin: 3px;">&nbsp; Bookmark</span>
+            {% if task.is_completed == False %}
+            <a href="{% url 'complete-tasks' id=task.id %}"><i class='far fa-bookmark' style='font-size:18px'></i></a>
+            {% endif %}
+            {% if task.is_completed == True %}
+            <a href="{% url 'complete-tasks' id=task.id %}"><i class='fas fa-bookmark' style='font-size:18px'></i></a>
+            {% endif %} 
+          </div>
+        </div>
+        <div class="card-body text-success">
+          <h6 class="card-title text-dark"><u>{{ task.pub_date }}</u></h6>
+          <p class="card-text text-dark">{{task.taskDescription}}</p>
+        </div>
+        <div class="card-footer bg-transparent">
+          <div style="display: flex; justify-content: space-between;">
+            <div style="display: flex; justify-content: flex-start;">
+              <div style="margin-left: 10px;">
+                <div style="margin: 3px 0px;">
+                  {% if task.category == 1 %}
+                  <a href="{% url 'add-category' id=task.id cat=1%}"><i class='fas fa-heart' style='font-size:18px'></i></a>
+                  {% else %}
+                  <a href="{% url 'add-category' id=task.id cat=1%}"><i class='far fa-heart' style='font-size:18px'></i></a>
+                  {% endif %}
+                  {% if task.category == 2 %}
+                  <a href="{% url 'add-category' id=task.id cat=2%}"><i class='fas fa-bell' style='font-size:18px; margin-left: 5px'></i></a>
+                  {% else %}
+                  <a href="{% url 'add-category' id=task.id cat=2%}"><i class='far fa-bell' style='font-size:18px; margin-left: 5px'></i></a>
+                  {% endif %}
+                  {% if task.category == 3 %}
+                  <a href="{% url 'add-category' id=task.id cat=3%}"><i class='fas fa-star' style='font-size:18px; margin-left: 5px'></i></a>
+                  {% else %}
+                  <a href="{% url 'add-category' id=task.id cat=3%}"><i class='far fa-star' style='font-size:18px; margin-left: 5px'></i></a>
+                  {% endif %}
+                  {% if task.category == 4 %}
+                  <a href="{% url 'add-category' id=task.id cat=4%}"><i class='fas fa-sticky-note' style='font-size:18px; margin-left: 5px'></i></a>
+                  {% else %}
+                  <a href="{% url 'add-category' id=task.id cat=4%}"><i class='far fa-sticky-note' style='font-size:18px; margin-left: 5px'></i></a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="{% url 'delete-tasks' id=task.id %}" style="float: right;" class="btn btn-danger btn-sm">Delete Note</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card mb-3" style="max-width: 24rem;">
+      <div class="card-header bg-transparent">
+        <span class="text-success"><b>Top Rated Note</b></span>
+        <button type="button" disabled class="rounded btn btn-outline-primary btn-sm" style="float: right;">Rating 
+          <span class="border border-success rounded-circle text-success badge badge-secondary">{{ topRated.rating }}</span>
+        </button>
+      </div>
+      <div class="card-body text-success">
+        <h6 class="card-title">{{ topRated.taskTitle }}</h6>
+        <p class="card-text">{{ topRated.taskDescription }}</p>
+      </div>
+    </div>
+    <div class="bg-light" style="padding-bottom: 10px;">
+      <div style="text-align: center; padding-top: 10px;">
+        <span><p class="text-primary"><b>Filter Your Preferences</b></p></span>
+      </div>
+      <div style="margin-left: 10px;" class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary">Love
+        <a href="{% url 'filter-note' id=1 %}"><i class='fas fa-heart' style='font-size:18px; margin-left: 5px'></i></a></label>
+        <label class="btn btn-secondary">Star
+        <a href="{% url 'filter-note' id=3 %}"><i class='fas fa-star' style='font-size:18px; margin-left: 5px'></i></a></label>
+        <label class="btn btn-secondary">Education
+        <a href="{% url 'filter-note' id=4 %}"><i class='far fa-sticky-note' style='font-size:18px; margin-left: 5px'></i></a></label>
+
+      </div>
+      {% for note in filters %}
+      <div class="card mb-3" style="max-width: 18rem; margin: 6px;">
+        <div class="card-header bg-transparent text-dark">
+          <span><b>{{ note.taskTitle }}</b></span>
+        </div>
+        <div class="card-body text-success">
+          <h6 class="card-title text-dark">{{ note.pub_date }}</h6>
+          <p class="card-text text-dark">{{ note.taskDescription }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div> 
+{% endblock %}
